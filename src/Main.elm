@@ -1,61 +1,80 @@
+module Main exposing (..)
+
 import Html exposing (..)
 import Html.App exposing (..)
 import Html.Attributes exposing (..)
 import Tree exposing (..)
 
 
-
 -- MODEL
 
-type alias Model = Tree
+
+type alias Model =
+    Tree
+
+
 model : Model
 model =
-  (addChildren (createNode "A") [
-      (createNode "B"),
-      (addChildren (createNode "C") [ (createNode "D") ]),
-      (createNode "E")
-    ]
-  )
+    (addChildren (createNode "A")
+        [ (addChildren (createNode "B") [ (createNode "D"), (createNode "E") ])
+        , (createNode "X")
+        , (addChildren (createNode "C") [ (createNode "F") ])
+        ]
+    )
 
+bfsLog : List String
+bfsLog = (Debug.log "bfs" (Tree.bfs model))
+
+dfsLog : List String
+dfsLog = (Debug.log "dfs" (Tree.dfs model))
 
 -- UPDATE
 
-type Msg
-  = NoOp
 
-update: Msg -> Model -> Model
+type Msg
+    = NoOp
+
+
+update : Msg -> Model -> Model
 update msg model =
-  Empty
+    Tree
+        { label = "fake"
+        , children = []
+        }
+
+
 
 -- VIEW
 
-graphView : Tree -> Html Msg
-graphView tree =
-  case tree of
-    Tree tree ->
-      ul [] [
-        li []
-          (List.append
-            [(text tree.label)]
-            (List.map graphView tree.children)
-          )
-          -- (List.map (\c -> graphView c) node.children))
-      ]
-    Empty -> (text "empty!")
+
+treeView : Tree -> Html Msg
+treeView tree =
+    case tree of
+        Tree tree ->
+            ul []
+                [ li []
+                    (List.append
+                        [ (text tree.label) ]
+                        (List.map treeView tree.children)
+                    )
+                ]
+
 
 view : Model -> Html Msg
 view model =
-  div [ style [("padding", "10px")]] [
-    (graphView model)
-  ]
+    div [ style [ ( "padding", "10px" ) ] ]
+        [ (treeView model)
+        ]
+
 
 
 -- MAIN
 
+
 main : Program Never
 main =
-  Html.App.beginnerProgram
-    { model = model
-    , view = view
-    , update = update
-    }
+    Html.App.beginnerProgram
+        { model = model
+        , view = view
+        , update = update
+        }
