@@ -15,19 +15,50 @@ type alias Model =
 
 model : Model
 model =
-    (addChildren (createNode "A")
-        [ (addChildren (createNode "B") [ (createNode "D"), (createNode "E") ])
-        , (createNode "X")
-        , (addChildren (createNode "C") [ (createNode "F") ])
+    (createNode 1
+        "One"
+        [ (createNode 2
+            "Two"
+            [ (createNode 5 "Five" [])
+            , (createNode 6 "Six" [])
+            ]
+          )
+        , (createNode 3
+            "Three"
+            [ (createNode 7 "Seven" [])
+            , (createNode 8 "Eight" [])
+            , (createNode 9 "Nine" [])
+            ]
+          )
+        , (createNode 4
+            "Four"
+            [ (createNode 10 "Ten" [])
+            , (createNode 11 "Elevin" [])
+            ]
+          )
         ]
     )
 
+
 bfsLog : List String
-bfsLog = (Debug.log "bfs" (Tree.bfs model))
+bfsLog =
+    (Debug.log "bfs" (Tree.bfsLog model))
+
 
 dfsLog : List String
-dfsLog = (Debug.log "dfs" (Tree.dfs model))
+dfsLog =
+    (Debug.log "dfs" (Tree.dfsLog model))
 
+
+dfsFindTest : Maybe Tree
+dfsFindTest =
+    (Debug.log "dfsFindTest found" (Tree.dfsFind model (Tree.idIs 7)))
+
+
+
+-- bfsFindTest : Maybe Tree
+-- bfsFindTest =
+--     (Debug.log "bfsFindTest" (Tree.bfsFind model 3))
 -- UPDATE
 
 
@@ -38,7 +69,8 @@ type Msg
 update : Msg -> Model -> Model
 update msg model =
     Tree
-        { label = "fake"
+        { id = 0
+        , label = "fake"
         , children = []
         }
 
