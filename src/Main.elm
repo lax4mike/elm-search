@@ -33,7 +33,7 @@ model =
         , (createNode 4
             "Four"
             [ (createNode 10 "Ten" [])
-            , (createNode 11 "Elevin" [])
+            , (createNode 11 "Eleven" [])
             ]
           )
         ]
@@ -52,13 +52,15 @@ dfsLog =
 
 dfsFindTest : Maybe Tree
 dfsFindTest =
-    (Debug.log "dfsFindTest found" (Tree.dfsFind model (Tree.idIs 7)))
+    (Debug.log "dfsFindTest found" (Tree.dfsFind model (Tree.idIs 9)))
+
+
+bfsFindTest : Maybe Tree
+bfsFindTest =
+    (Debug.log "bfsFindTest" (Tree.bfsFind model (Tree.idIs 9)))
 
 
 
--- bfsFindTest : Maybe Tree
--- bfsFindTest =
---     (Debug.log "bfsFindTest" (Tree.bfsFind model 3))
 -- UPDATE
 
 

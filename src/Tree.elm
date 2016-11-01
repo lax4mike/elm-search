@@ -1,5 +1,7 @@
 module Tree exposing (..)
 
+import Queue
+
 
 type Tree
     = Tree { id : Int, label : String, children : List Tree }
@@ -66,7 +68,7 @@ dfsFind tree predicate =
         poo =
             case tree of
                 Tree tree ->
-                    (Debug.log "looking in: " tree.label)
+                    (Debug.log "dfsFind looking in" tree.label)
     in
         if (predicate tree) then
             -- if this tree is it, return it
@@ -117,20 +119,42 @@ bfsLog tree =
                 List.append visited newNodes
 
 
+{-|
+bfsFind : Find the node with the given id using breadth-first traversal
+-}
+bfsFind : Tree -> (Tree -> Bool) -> Maybe Tree
+bfsFind tree predicate =
+    let
+        queue =
+            Queue.empty
 
--- {-|
--- bfsFind : Find the node with the given id using breadth-first traversal
--- -}
--- bfsFind : Tree Int -> Maybe Tree
--- bfsFind tree id =
---     case tree of
---         Tree tree ->
---             if tree.id == id then
---                 -- if this tree is it, return it
---                 Just (Tree tree)
---             else
---                 let
---                     poo =
---                         "what'"
---                 in
---                     Just (Tree tree)
+        exploreNext : Tree -> Queue.Queue Tree -> Maybe Tree
+        exploreNext tree queue =
+            let
+                poo =
+                    case tree of
+                        Tree tree ->
+                            (Debug.log "bfsFind looking in" tree.label)
+            in
+                if (predicate tree) then
+                    -- if this tree is it, return it
+                    Just tree
+                else
+                    case tree of
+                        Tree tree ->
+                            let
+                                -- add the children of this tree to the queue
+                                newQueue =
+                                    List.foldl (Queue.push) queue tree.children
+                            in
+                                case (Queue.pop newQueue) of
+                                    -- pop from the queue and explore that tree
+                                    Just ( nextTree, nextQueue ) ->
+                                        exploreNext nextTree nextQueue
+
+                                    -- if the queue is empty, we're done
+                                    Nothing ->
+                                        Nothing
+    in
+        -- start with the root tree node and the empty queue
+        exploreNext tree queue
